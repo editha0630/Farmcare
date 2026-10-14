@@ -180,4 +180,3 @@ AI는 초기에는 **실제 등록된 상품 데이터 기반의 맞춤 추천**
 | Date | What changed and why |
 |---|---|
 | 2026-10-14 | 교수님 피드백 반영 _REV: 단기 진입점을 '농업 운영 컨시어지'에서 'AI 기반 농촌 체험·예약 플랫폼(함평 감 수확 체험)'으로 조정하고, 컨시어지는 Phase 3 장기 목표로 재배치. 수요 측 고객, 정량 검증 목표, 출시 전 리스크 조건, 중단 기준 구체화 |
-| [YYYY-MM-DD] | Revised after consultation on [date]: [what changed] |
