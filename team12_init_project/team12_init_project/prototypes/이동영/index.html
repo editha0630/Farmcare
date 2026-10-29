@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FarmCare 수확체험 사전 신청</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <strong class="brand">FarmCare</strong>
+    <nav>
+      <a href="#apply" data-nav="apply">사전 신청</a>
+      <a href="#team" data-nav="team">팀용 신청 목록</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 신청자(도시 가족) 화면 -->
+    <section id="apply-view">
+      <div class="card intro">
+        <h1>단감 수확체험 사전 신청</h1>
+        <p class="lead">일손이 부족한 농가의 실제 수확을 도와주세요. 가족이 함께 딴 감이 농가의 한 해 수확이 됩니다.</p>
+        <dl class="facts">
+          <dt>농가</dt><dd id="farm-name"></dd>
+          <dt>작물</dt><dd id="farm-crop"></dd>
+          <dt>수확 기간</dt><dd id="farm-period"></dd>
+        </dl>
+        <ul class="policy">
+          <li><b>요금</b> 기본 체험비에 단감 1박스 포함, 추가 구매는 박스 단위 (금액은 확정 문자에서 안내)</li>
+          <li><b>일정</b> 주말 단위로 신청받고, 정확한 날짜는 체험 7일 전(D-7)에 확정해 연락드립니다</li>
+          <li><b>결제</b> 사전 신청은 무료입니다. 확정 문자에 안내된 계좌로 입금하면 예약이 확정됩니다</li>
+          <li><b>우천</b> 연기를 우선하고, 연기가 어려우면 전액 환불합니다</li>
+          <li><b>운영</b> 하루 1회, 회당 최대 <span id="max-people"></span>명까지 받습니다</li>
+        </ul>
+      </div>
+
+      <form id="apply-form" class="card" novalidate>
+        <div id="error-summary" class="error-summary" role="alert" hidden></div>
+
+        <div class="field" id="farm-field">
+          <label for="farm">농가</label>
+          <select id="farm" name="farm"></select>
+        </div>
+
+        <fieldset class="field" id="weekend-field">
+          <legend>희망 주말</legend>
+          <div id="weekend-options" class="options"></div>
+          <p class="field-error" id="err-weekend"></p>
+        </fieldset>
+
+        <div class="field">
+          <label for="people">가족 인원 (아이 포함)</label>
+          <input id="people" name="people" type="number" inputmode="numeric" min="1">
+          <p class="hint" id="people-hint"></p>
+          <p class="field-error" id="err-people"></p>
+        </div>
+
+        <div class="field">
+          <label for="childAges">아이 나이</label>
+          <input id="childAges" name="childAges" type="text" placeholder="예: 6, 9">
+          <p class="hint">쉼표로 구분해 주세요. 아이가 없으면 "없음"이라고 적어 주세요.</p>
+          <p class="field-error" id="err-childAges"></p>
+        </div>
+
+        <div class="field">
+          <label for="phone">연락처</label>
+          <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="010-1234-5678" autocomplete="tel">
+          <p class="hint">확정 일정과 입금 계좌를 이 번호로 문자 드립니다.</p>
+          <p class="field-error" id="err-phone"></p>
+        </div>
+
+        <fieldset class="field safety">
+          <legend>안전 수칙</legend>
+          <ul>
+            <li>사다리는 사용하지 않습니다. 손이 닿는 가지와 장대로만 수확합니다.</li>
+            <li>높은 가지는 체험 대상에서 제외합니다.</li>
+            <li>어린이는 반드시 보호자와 함께합니다.</li>
+            <li>감따기 장대는 성인만 사용합니다.</li>
+          </ul>
+          <label class="check">
+            <input id="safety" name="safety" type="checkbox">
+            위 안전 수칙을 읽었고 동의합니다.
+          </label>
+          <p class="field-error" id="err-safety"></p>
+        </fieldset>
+
+        <button type="submit" class="primary">사전 신청하기</button>
+      </form>
+
+      <div id="success" class="card success" hidden>
+        <h2>신청이 완료되었습니다</h2>
+        <p>확정 일정은 체험 7일 전(D-7)에 문자로 연락드립니다.</p>
+        <dl class="facts" id="success-summary"></dl>
+        <button type="button" id="apply-again">다른 신청하기</button>
+      </div>
+    </section>
+
+    <!-- FarmCare 팀 화면 -->
+    <section id="team-view" hidden>
+      <h1>팀용 신청 목록</h1>
+      <p class="note">이 브라우저에 저장된 신청만 보입니다.</p>
+      <div id="team-error" class="error-summary" role="alert" hidden></div>
+      <div id="team-content"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
