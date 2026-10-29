@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FarmCare 농지 관리 신청서</title>
+  <style>
+    :root {
+      --bg: #fbfaf6;
+      --card: #ffffff;
+      --text: #1b1b1b;
+      --muted: #4a4a4a;
+      --line: #8a8a8a;
+      --brand: #1f5f2e;
+      --brand-dark: #154421;
+      --brand-soft: #e6f1e8;
+      --error: #b3261e;
+      --error-soft: #fdecea;
+      --notice: #fff4d6;
+      --focus: #f2a900;
+    }
+    * { box-sizing: border-box; }
+    html { font-size: 20px; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      line-height: 1.6;
+      word-break: keep-all;
+    }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 16px 16px 48px; }
+    header.site { display: flex; align-items: baseline; gap: 12px; padding: 8px 0 16px; }
+    header.site strong { color: var(--brand); font-size: 1.3rem; }
+    header.site span { color: var(--muted); }
+
+    .notice {
+      background: var(--notice);
+      border-left: 6px solid var(--focus);
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin: 0 0 20px;
+    }
+    .notice p { margin: 0; }
+    .notice p + p { margin-top: 6px; }
+
+    .card {
+      background: var(--card);
+      border: 2px solid #d9d6cc;
+      border-radius: 14px;
+      padding: 24px 20px;
+    }
+    .progress { color: var(--brand); font-weight: 700; margin: 0 0 6px; }
+    .progress-bar { height: 10px; background: #e3e0d6; border-radius: 5px; overflow: hidden; margin-bottom: 20px; }
+    .progress-bar div { height: 100%; background: var(--brand); transition: width .2s; }
+
+    h1, h2 { margin: 0 0 8px; line-height: 1.35; }
+    h2 { font-size: 1.5rem; }
+    h2:focus { outline: none; }
+    .hint { color: var(--muted); margin: 0 0 16px; }
+
+    input[type="text"], input[type="tel"], input[type="number"] {
+      width: 100%;
+      font: inherit;
+      font-size: 1.2rem;
+      padding: 14px 16px;
+      min-height: 60px;
+      border: 2px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
+    }
+    input:focus-visible, button:focus-visible, a:focus-visible, .choice:focus-within {
+      outline: 4px solid var(--focus);
+      outline-offset: 2px;
+    }
+    input[aria-invalid="true"] { border-color: var(--error); background: var(--error-soft); }
+    .error { color: var(--error); font-weight: 700; margin: 10px 0 0; }
+    .error::before { content: "⚠ "; }
+
+    .choices { display: grid; gap: 12px; border: 0; padding: 0; margin: 0; }
+    .choices.row { grid-template-columns: 1fr 1fr; }
+    .choice {
+      display: flex; align-items: center; gap: 14px;
+      min-height: 64px; padding: 12px 16px;
+      border: 2px solid var(--line); border-radius: 12px;
+      background: #fff; cursor: pointer; font-size: 1.1rem;
+    }
+    .choice input { width: 28px; height: 28px; margin: 0; accent-color: var(--brand); flex: none; }
+    .choice:has(input:checked) { border-color: var(--brand); background: var(--brand-soft); font-weight: 700; }
+    .choice small { display: block; color: var(--muted); font-weight: 400; font-size: .85rem; }
+    .area-row { margin-bottom: 16px; }
+    .label { display: block; font-weight: 700; margin: 0 0 8px; }
+    .or { text-align: center; color: var(--muted); margin: 16px 0; }
+
+    .actions { display: flex; gap: 12px; margin-top: 28px; }
+    button {
+      font: inherit; font-size: 1.15rem; font-weight: 700;
+      min-height: 60px; padding: 0 20px;
+      border-radius: 12px; cursor: pointer;
+      border: 2px solid var(--brand);
+    }
+    .primary { flex: 2; background: var(--brand); color: #fff; }
+    .primary:hover { background: var(--brand-dark); }
+    .secondary { flex: 1; background: #fff; color: var(--brand); }
+    .actions .secondary[hidden] + .primary { flex: 1; }
+
+    dl.summary { margin: 0; }
+    .summary-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 12px; padding: 14px 0; border-bottom: 1px solid #d9d6cc; }
+    .summary-row:last-child { border-bottom: 0; }
+    .summary-row dt { color: var(--muted); width: 100%; font-size: .9rem; }
+    .summary-row dd { margin: 0; font-size: 1.25rem; font-weight: 700; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+    .summary-row dd.empty { color: var(--muted); font-weight: 400; }
+    .edit {
+      font-size: 1rem; min-height: 48px; padding: 0 16px;
+      background: #fff; color: var(--brand);
+    }
+    .done-msg { margin: 24px 0 0; font-weight: 700; }
+
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site">
+      <strong>FarmCare</strong>
+      <span>농지 관리 신청서</span>
+    </header>
+
+    <div id="intro" class="notice">
+      <p><b>쉬운 신청서입니다.</b> 한 화면에 질문 하나씩, 다섯 가지만 여쭙겠습니다.</p>
+      <p>입력하신 정보는 이 화면에만 표시되며 어디에도 저장·전송되지 않습니다.</p>
+    </div>
+
+    <form id="form" class="card" novalidate>
+      <p class="progress" id="progress-text">1 / 5</p>
+      <div class="progress-bar" aria-hidden="true"><div id="progress-bar"></div></div>
+
+      <section data-step="1">
+        <h2 tabindex="-1">성함을 알려주세요</h2>
+        <p class="hint" id="name-hint">예: 홍길동</p>
+        <input type="text" id="name" autocomplete="name" aria-labelledby="name-label" aria-describedby="name-hint name-error">
+        <span id="name-label" hidden>성함</span>
+        <p class="error" id="name-error" hidden></p>
+      </section>
+
+      <section data-step="2" hidden>
+        <h2 tabindex="-1">연락받으실 전화번호를 알려주세요</h2>
+        <p class="hint" id="phone-hint">숫자만 누르시면 됩니다. 예: 010-1234-5678</p>
+        <input type="tel" id="phone" inputmode="tel" autocomplete="tel" maxlength="13" aria-label="전화번호" aria-describedby="phone-hint phone-error">
+        <p class="error" id="phone-error" hidden></p>
+      </section>
+
+      <section data-step="3" hidden>
+        <h2 tabindex="-1">농지가 어디에 있나요?</h2>
+        <p class="hint" id="location-hint">아시는 만큼만 적어 주세요. 예: 경북 상주시 외남면 ○○리</p>
+        <input type="text" id="location" aria-label="농지 위치" aria-describedby="location-hint location-error">
+        <p class="error" id="location-error" hidden></p>
+      </section>
+
+      <section data-step="4" hidden>
+        <h2 tabindex="-1">농지 넓이는 얼마나 되나요?</h2>
+        <p class="hint">모르셔도 괜찮습니다. 아래 "잘 모르겠어요"를 눌러 주세요.</p>
+        <div class="area-row">
+          <label class="label" for="area">넓이</label>
+          <input type="number" id="area" inputmode="decimal" min="0" step="any" aria-describedby="area-error">
+          <p class="error" id="area-error" hidden></p>
+        </div>
+        <fieldset class="choices row">
+          <legend class="label">단위</legend>
+          <label class="choice"><input type="radio" name="unit" value="평" checked> 평</label>
+          <label class="choice"><input type="radio" name="unit" value="㎡"> ㎡ (제곱미터)</label>
+        </fieldset>
+        <p class="or">또는</p>
+        <label class="choice"><input type="checkbox" id="area-unknown"> 잘 모르겠어요</label>
+      </section>
+
+      <section data-step="5" hidden>
+        <h2 tabindex="-1">농지를 어떻게 활용하고 싶으세요?</h2>
+        <p class="hint">하나만 골라 주세요. 나중에 상담하며 바꾸실 수 있습니다.</p>
+        <fieldset class="choices">
+          <legend hidden>희망 활용 방식</legend>
+          <label class="choice"><input type="radio" name="use" value="농가에 임대"><span>농가에 임대<small>농사지을 농가에 땅을 빌려줍니다</small></span></label>
+          <label class="choice"><input type="radio" name="use" value="농작업 위탁"><span>농작업 위탁<small>농사일을 맡기고 수확은 소유자가 가져갑니다</small></span></label>
+          <label class="choice"><input type="radio" name="use" value="체험농장 운영"><span>체험농장 운영<small>도시 가족이 와서 농사·수확을 체험합니다</small></span></label>
+          <label class="choice"><input type="radio" name="use" value="잘 모르겠어요 (상담 원함)"><span>잘 모르겠어요<small>상담받고 정하고 싶어요</small></span></label>
+        </fieldset>
+      </section>
+
+      <section data-step="6" hidden>
+        <h2 tabindex="-1">적으신 내용을 확인해 주세요</h2>
+        <p class="hint">틀린 곳이 있으면 "수정"을 눌러 고치실 수 있습니다.</p>
+        <dl class="summary" id="summary"></dl>
+        <div class="notice" style="margin-top:20px">
+          <p><b>견본 화면입니다.</b> 실제로 접수되거나 전송되지 않았습니다.</p>
+          <p>입력하신 정보는 이 화면에만 표시되며 어디에도 저장·전송되지 않습니다.</p>
+        </div>
+      </section>
+
+      <div class="actions" id="actions">
+        <button type="button" class="secondary" id="back">이전</button>
+        <button type="submit" class="primary" id="next">다음</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // 입력값은 이 변수와 화면에만 있다. 저장·전송하지 않는다.
+    const TOTAL = 5;
+    const SUMMARY = 6;
+    const form = document.getElementById('form');
+    const backBtn = document.getElementById('back');
+    const nextBtn = document.getElementById('next');
+    const actions = document.getElementById('actions');
+    const $ = (id) => document.getElementById(id);
+
+    let step = 1;
+    let returnToSummary = false;
+
+    function formatPhone(raw) {
+      const d = raw.replace(/\D/g, '').slice(0, 11);
+      if (d.startsWith('02')) {
+        if (d.length <= 2) return d;
+        if (d.length <= 5) return `${d.slice(0, 2)}-${d.slice(2)}`;
+        if (d.length <= 9) return `${d.slice(0, 2)}-${d.slice(2, 5)}-${d.slice(5)}`;
+        return `${d.slice(0, 2)}-${d.slice(2, 6)}-${d.slice(6, 10)}`;
+      }
+      if (d.length <= 3) return d;
+      if (d.length <= 6) return `${d.slice(0, 3)}-${d.slice(3)}`;
+      if (d.length <= 10) return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`;
+      return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
+    }
+
+    $('phone').addEventListener('input', (e) => {
+      e.target.value = formatPhone(e.target.value);
+    });
+
+    $('area-unknown').addEventListener('change', (e) => {
+      const area = $('area');
+      area.disabled = e.target.checked;
+      document.querySelectorAll('input[name="unit"]').forEach((r) => { r.disabled = e.target.checked; });
+      if (e.target.checked) { area.value = ''; showError('area', ''); }
+    });
+
+    function showError(field, message) {
+      const input = $(field);
+      const box = $(`${field}-error`);
+      box.textContent = message;
+      box.hidden = !message;
+      input.setAttribute('aria-invalid', message ? 'true' : 'false');
+      if (message) input.focus();
+      return !message;
+    }
+
+    function validate(n) {
+      if (n === 1) {
+        return showError('name', $('name').value.trim() ? '' : '성함을 적어 주세요.');
+      }
+      if (n === 2) {
+        const digits = $('phone').value.replace(/\D/g, '');
+        if (!digits) return showError('phone', '전화번호를 적어 주세요.');
+        if (digits.length < 10 || digits.length > 11) {
+          return showError('phone', `숫자 10~11자리를 적어 주세요. 지금 ${digits.length}자리입니다.`);
+        }
+        return showError('phone', '');
+      }
+      if (n === 3) {
+        return showError('location', $('location').value.trim() ? '' : '농지 위치를 적어 주세요. 읍·면까지만 적으셔도 됩니다.');
+      }
+      if (n === 4) {
+        if ($('area-unknown').checked) return showError('area', '');
+        const raw = $('area').value.trim();
+        if (!raw) return showError('area', '');
+        const v = Number(raw);
+        return showError('area', Number.isFinite(v) && v > 0 ? '' : '0보다 큰 숫자를 적어 주세요.');
+      }
+      return true;
+    }
+
+    function answers() {
+      const unit = document.querySelector('input[name="unit"]:checked').value;
+      const use = document.querySelector('input[name="use"]:checked');
+      const areaRaw = $('area').value.trim();
+      let area = '';
+      if ($('area-unknown').checked) area = '잘 모르겠어요';
+      else if (areaRaw) area = `${Number(areaRaw).toLocaleString('ko-KR')} ${unit}`;
+      return [
+        { step: 1, label: '성함', value: $('name').value.trim() },
+        { step: 2, label: '전화번호', value: $('phone').value },
+        { step: 3, label: '농지 위치', value: $('location').value.trim() },
+        { step: 4, label: '농지 넓이', value: area },
+        { step: 5, label: '희망 활용 방식', value: use ? use.value : '' },
+      ];
+    }
+
+    function renderSummary() {
+      const dl = $('summary');
+      dl.replaceChildren();
+      for (const a of answers()) {
+        const row = document.createElement('div');
+        row.className = 'summary-row';
+        const dt = document.createElement('dt');
+        dt.textContent = a.label;
+        const dd = document.createElement('dd');
+        dd.textContent = a.value || '입력 안 함';
+        if (!a.value) dd.className = 'empty';
+        const edit = document.createElement('button');
+        edit.type = 'button';
+        edit.className = 'edit';
+        edit.textContent = '수정';
+        edit.setAttribute('aria-label', `${a.label} 수정`);
+        edit.addEventListener('click', () => { returnToSummary = true; go(a.step); });
+        row.append(dt, dd, edit);
+        dl.append(row);
+      }
+    }
+
+    function go(n) {
+      step = n;
+      document.querySelectorAll('section[data-step]').forEach((s) => {
+        s.hidden = Number(s.dataset.step) !== n;
+      });
+      const onSummary = n === SUMMARY;
+      $('intro').hidden = n !== 1;
+      $('progress-text').textContent = onSummary ? '마지막 확인' : `${n} / ${TOTAL}`;
+      $('progress-bar').style.width = `${(Math.min(n, TOTAL) / TOTAL) * 100}%`;
+
+      if (onSummary) {
+        renderSummary();
+        actions.hidden = true;
+      } else {
+        actions.hidden = false;
+        backBtn.hidden = n === 1 || returnToSummary;
+        nextBtn.textContent = returnToSummary ? '확인 화면으로' : (n === TOTAL ? '확인' : '다음');
+      }
+
+      document.querySelector(`section[data-step="${n}"] h2`).focus();
+      window.scrollTo(0, 0);
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validate(step)) return;
+      if (returnToSummary || step === TOTAL) {
+        returnToSummary = false;
+        go(SUMMARY);
+      } else {
+        go(step + 1);
+      }
+    });
+
+    backBtn.addEventListener('click', () => go(step - 1));
+
+    go(1);
+  </script>
+</body>
+</html>
