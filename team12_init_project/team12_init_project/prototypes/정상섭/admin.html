@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>예약 운영자</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin">
+  <div id="demo-banner" class="demo-banner" hidden>데모 모드: 예약이 이 브라우저에만 저장됩니다.</div>
+
+  <main class="page">
+    <section id="login" class="card" hidden>
+      <h1>운영자 로그인</h1>
+      <form id="login-form" novalidate>
+        <label class="field">
+          <span>이메일</span>
+          <input id="email" type="email" autocomplete="username" required>
+        </label>
+        <label class="field">
+          <span>비밀번호</span>
+          <input id="password" type="password" autocomplete="current-password" required>
+        </label>
+        <p id="login-error" class="notice notice-error" role="alert" hidden></p>
+        <p id="demo-login-hint" class="hint" hidden></p>
+        <button id="login-btn" type="submit" class="btn-primary">로그인</button>
+      </form>
+    </section>
+
+    <section id="board" hidden>
+      <div class="board-head">
+        <h1>예약 명단</h1>
+        <div class="board-user">
+          <span id="user-email" class="muted"></span>
+          <button id="logout-btn" type="button" class="btn-link">로그아웃</button>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <label class="field compact">
+          <span>회차</span>
+          <select id="filter-slot"><option value="">전체</option></select>
+        </label>
+        <label class="field compact">
+          <span>상태</span>
+          <select id="filter-status">
+            <option value="">전체</option>
+            <option value="pending">입금 대기</option>
+            <option value="confirmed">예약 확정</option>
+            <option value="cancelled">취소</option>
+          </select>
+        </label>
+        <button id="refresh-btn" type="button" class="btn-secondary">새로고침</button>
+      </div>
+
+      <p id="board-error" class="notice notice-error" role="alert" hidden></p>
+      <p id="count-line" class="muted"></p>
+      <div id="booking-list" class="booking-list"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>감 수확 체험 예약</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="demo-banner" class="demo-banner" hidden>데모 모드: 예약이 이 브라우저에만 저장됩니다.</div>
+
+  <header class="hero">
+    <p class="eyebrow" id="farm-region"></p>
+    <h1><span id="farm-name"></span><br>감 수확 체험</h1>
+    <p id="farm-intro" class="hero-intro"></p>
+  </header>
+
+  <main class="page">
+    <section class="card">
+      <h2>체험 안내</h2>
+      <dl class="info">
+        <dt>일정</dt><dd>11/14(토)·11/15(일), 하루 2회 (오전 10시, 오후 2시)</dd>
+        <dt>가격</dt><dd>가족 1팀(최대 4명) <strong id="price"></strong></dd>
+        <dt>포함</dt><dd>감 따기 체험, 감 5kg 1상자</dd>
+        <dt>인원</dt><dd>1팀 최대 4명. 만 3세 미만 아이는 인원에 넣지 않고 무료입니다. 5명 이상이면 2번 예약해 주세요.</dd>
+        <dt>신청 마감</dt><dd>11/11(수) 밤 11:59</dd>
+      </dl>
+    </section>
+
+    <div id="closed-banner" class="notice notice-warn" hidden>예약 신청이 마감되었습니다. 참여해 주셔서 감사합니다.</div>
+
+    <form id="booking-form" class="card" novalidate>
+      <h2>예약 신청</h2>
+
+      <fieldset>
+        <legend>회차 선택</legend>
+        <div id="slot-list" class="slot-list" aria-live="polite">
+          <p class="muted">남은 자리를 불러오는 중…</p>
+        </div>
+      </fieldset>
+
+      <label class="field">
+        <span>예약자 이름</span>
+        <input id="name" name="name" autocomplete="name" maxlength="30" required>
+      </label>
+
+      <label class="field">
+        <span>휴대폰 번호</span>
+        <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="010-1234-5678" required>
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span>어른</span>
+          <select id="adults" name="adults">
+            <option value="1">1명</option><option value="2" selected>2명</option>
+            <option value="3">3명</option><option value="4">4명</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>어린이</span>
+          <select id="children" name="children">
+            <option value="0">0명</option><option value="1">1명</option>
+            <option value="2" selected>2명</option><option value="3">3명</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>만 3세 미만</span>
+          <select id="infants" name="infants">
+            <option value="0" selected>0명</option><option value="1">1명</option>
+            <option value="2">2명</option><option value="3">3명</option><option value="4">4명</option>
+          </select>
+        </label>
+      </div>
+      <p id="headcount-hint" class="hint">어른과 어린이를 합쳐 최대 4명입니다. 5명 이상이면 2번 예약해 주세요. 만 3세 미만은 합계에 넣지 않습니다.</p>
+
+      <label class="field">
+        <span>입금자명</span>
+        <input id="depositor" name="depositor" maxlength="30" required>
+        <small class="hint">예약자 이름과 다르면 고쳐주세요.</small>
+      </label>
+
+      <label class="field">
+        <span>어떻게 알게 되셨나요?</span>
+        <select id="heard-from" name="heardFrom" required>
+          <option value="" selected disabled>선택해 주세요</option>
+          <option>지인 소개</option>
+          <option>SNS</option>
+          <option>지역 커뮤니티</option>
+          <option>기타</option>
+        </select>
+      </label>
+
+      <details class="rules">
+        <summary>안전 수칙</summary>
+        <ul>
+          <li>사다리 사용과 나무 오르기는 금지합니다. 감 따는 장대를 드립니다.</li>
+          <li>어린이는 보호자와 함께 체험해 주세요.</li>
+        </ul>
+      </details>
+
+      <details class="rules">
+        <summary>취소·환불 규칙</summary>
+        <ul>
+          <li>11/11(수)까지 취소하면 전액 환불합니다.</li>
+          <li>11/12 이후 취소하거나 당일 오지 않으면 환불 대신 감 5kg을 택배로 보내드립니다. (택배비는 고객 부담)</li>
+          <li>비, 강풍 등 농장 사정으로 취소되면 전액 환불 또는 다른 회차로 변경 중에서 고르실 수 있습니다. 11/13(금) 오후 5시까지 문자로 알려드립니다.</li>
+        </ul>
+      </details>
+
+      <label class="check">
+        <input id="privacy" type="checkbox" required>
+        <span><strong>[필수] 개인정보 수집·이용 동의</strong><br>
+          이름, 휴대폰 번호를 예약 확인과 연락에만 쓰고, 체험이 끝나고 1개월 뒤 삭제합니다.</span>
+      </label>
+
+      <p id="form-error" class="notice notice-error" role="alert" hidden></p>
+
+      <button id="submit-btn" type="submit" class="btn-primary">예약 신청</button>
+      <p class="hint center">신청 후 24시간 안에 아래 계좌로 입금하시면 예약이 확정됩니다.</p>
+    </form>
+
+    <section id="done" class="card done" hidden tabindex="-1">
+      <h2>예약 신청이 접수되었습니다</h2>
+      <p class="notice notice-warn"><strong>이 화면을 캡처해 두세요.</strong> 아래 계좌로 입금하셔야 예약이 확정됩니다.</p>
+      <dl class="info">
+        <dt>회차</dt><dd id="done-slot"></dd>
+        <dt>입금 금액</dt><dd><strong id="done-amount"></strong></dd>
+        <dt>입금 마감</dt><dd><strong id="done-deadline" class="accent"></strong> (한국 시간)</dd>
+        <dt>입금자명</dt><dd id="done-depositor"></dd>
+      </dl>
+      <div class="account-box">
+        <p class="account-line"><span class="account-bank"></span> <span class="account-number"></span></p>
+        <p class="account-holder"></p>
+        <button type="button" class="btn-secondary copy-btn">계좌번호 복사</button>
+      </div>
+      <p class="hint">입금이 확인되면 문자로 확정 안내와 농장 주소를 보내드립니다. (매일 저녁 확인)</p>
+      <p class="hint">기한 안에 입금되지 않으면 예약은 취소되고 자리가 다른 가족에게 열립니다.</p>
+      <button type="button" id="again-btn" class="btn-link">다른 예약 하기</button>
+    </section>
+
+    <section id="deposit-info" class="card">
+      <h2>입금 안내</h2>
+      <p>예약 신청 후 <strong>24시간 안에</strong> 아래 계좌로 입금해 주세요.</p>
+      <div class="account-box">
+        <p class="account-line"><span class="account-bank"></span> <span class="account-number"></span></p>
+        <p class="account-holder"></p>
+        <p>금액: 1팀 <strong class="price-text"></strong> (2팀 예약 시 2배)</p>
+        <button type="button" class="btn-secondary copy-btn">계좌번호 복사</button>
+      </div>
+    </section>
+
+    <footer class="footer">Farm Care · 대학생 팀 프로젝트로 운영하는 농가 체험입니다.</footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/booking.js"></script>
+</body>
+</html>
