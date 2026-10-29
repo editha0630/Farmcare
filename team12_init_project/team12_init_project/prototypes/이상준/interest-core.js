@@ -1,0 +1,8 @@
+(function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory();else root.InterestForm=factory();})(typeof globalThis!=='undefined'?globalThis:this,function(){
+'use strict';const labels={name:'이름 또는 닉네임',group:'참여 유형',region:'희망 지역',activity:'관심 체험',contact:'연락받을 방법',memo:'추가 의견'};
+const groups=['혼자','연인','친구','가족','기타'];const activities=['농작물 수확','농장 일손 체험','자연 속 나들이','아직 잘 모르겠어요','기타'];
+function normalize(v){return Object.fromEntries(Object.keys(labels).map(k=>[k,String(v[k]??'').trim()]));}
+function validate(input){const v=normalize(input),e={};if(!v.name)e.name='이름 또는 닉네임을 입력해 주세요.';if(v.name.length>80)e.name='이름은 80자 이내로 입력해 주세요.';if(!groups.includes(v.group))e.group='함께 참여하고 싶은 유형을 선택해 주세요.';if(!activities.includes(v.activity))e.activity='관심 있는 체험을 선택해 주세요.';
+if(v.contact){const email=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.contact),digits=v.contact.replace(/[\s()+-]/g,'');const phone=/^0\d{8,10}$/.test(digits);if(!email&&!phone)e.contact='이메일 또는 국내 전화번호 형식으로 입력해 주세요.';}if(v.contact.length>120)e.contact='연락 방법은 120자 이내로 입력해 주세요.';if(v.region.length>120)e.region='희망 지역은 120자 이내로 입력해 주세요.';if(v.memo.length>2000)e.memo='추가 의견은 2,000자 이내로 입력해 주세요.';return {values:v,errors:e,valid:!Object.keys(e).length};}
+function summary(v){return ['Farmcare 체험 참여 의향 · 개인 보관용',...Object.entries(labels).map(([k,l])=>l+': '+(v[k]||'미입력')),'','이 문서는 실제 신청 접수 또는 예약 확정 내역이 아닙니다.','체험 장소·일정·비용은 미정이며 입력은 서버로 전송되거나 브라우저에 저장되지 않았습니다.'].join('\n');}
+return {labels,validate,summary,normalize};});
